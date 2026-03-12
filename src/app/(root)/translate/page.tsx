@@ -1,0 +1,19 @@
+import { Button } from '@/components/ui/button'
+import PageHeader from '@/features/dashboard/page-header'
+import { Warning } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+import React from 'react'
+
+const page = () => {
+  return (
+    <div className='flex-1 w-full h-full'>
+      <PageHeader name='Translate'>
+       <div className="right flex items-center gap-2">
+        <Button className={"rounded-md"} variant={"destructive"}><HugeiconsIcon icon={Warning}/>Report Bug</Button>
+       </div>
+      </PageHeader>
+    </div>
+  )
+}
+
+export default page

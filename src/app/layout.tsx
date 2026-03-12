@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
-import { Figtree } from "next/font/google";
+import { Figtree,DM_Sans } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { shadcn } from '@clerk/themes'
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip"
 const figtree = Figtree({subsets:['latin'],variable:'--font-sans'});
-
+const font = DM_Sans({
+  subsets:["latin"]
+})
 
 
 
@@ -26,9 +28,9 @@ export default function RootLayout({
         baseTheme: shadcn,
       }}
   >
-      <html lang="en" className={cn("font-sans", figtree.variable)}>
+      <html lang="en" >
       <body
-        className={` antialiased`}
+        className={` antialiased ${font.className}`}
       >
      <TooltipProvider>
          {children}
