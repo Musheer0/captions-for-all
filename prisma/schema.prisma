@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+enum VideoProcessingStatus {
+  UPLOADING
+  PROCESSING
+  FAILED_UPLOADING
+  FAILED_PROCESSING
+  FINALIZED
+}
+model Video {
+  id String @id @default(cuid())
+
+  original_file_name String @default("video")
+  size Int @default(0)
+
+  user_id String
+  object_key String
+  lang String @default("en")
+
+  status VideoProcessingStatus @default(UPLOADING)
+
+  captions Caption[]
+  generations VideoGeneration[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([user_id])
+}
+
+model Caption {
+  id String @id @default(cuid())
+
+  object_key String
+  lang String @default("en")
+
+  video_id String
+  video Video @relation(fields: [video_id], references: [id], onDelete: Cascade)
+
+  generations VideoGeneration[]
+
+  user_id String
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([video_id])
+  @@index([user_id])
+  @@unique([video_id, lang])
+}
+
+model VideoGeneration {
+  id String @id @default(cuid())
+
+  object_key String
+  lang String @default("en")
+
+  video_id String
+  video Video @relation(fields: [video_id], references: [id], onDelete: Cascade)
+
+  caption_id String?
+  caption Caption? @relation(fields: [caption_id], references: [id], onDelete: SetNull)
+
+  user_id String
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([video_id])
+  @@index([caption_id])
+  @@index([user_id])
+  @@index([video_id, lang])
+}
