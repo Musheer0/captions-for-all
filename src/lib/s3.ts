@@ -19,7 +19,7 @@ export const s3 = new S3Client({
 export const deleteObject = async (key: string) => {
   await s3.send(
     new DeleteObjectCommand({
-      Bucket: process.env.R2_BUCKET_NAME ?? "",
+      Bucket: process.env.BUCKET_NAME ?? "",
       Key: key,
     }),
   );
@@ -32,16 +32,19 @@ export const getSignedObjectUrl = async (key: string) => {
   });
   return getSignedUrl(s3, cmd, { expiresIn: 36000 });
 };
-export async function getUploadUrl(key: string) {
-  const { url, fields } = await createPresignedPost(s3, {
-    Bucket: process.env.R2_BUCKET_NAME!,
+const MAX_SIZE=1024 * 1024 * 1024
+export async function getS3UploadUrl(key: string,contentType:string,fileSize:number) {
+  if(fileSize>MAX_SIZE) throw new Error("File too large")
+  const cmd = new PutObjectCommand({
+    Bucket: process.env.BUCKET_NAME!,
     Key: key,
-    Expires: 20,
-    Conditions: [
-      ["content-length-range", 0, 1024 * 1024 * 1024], // 1GB HARD LIMIT for demo purpose
-      ["starts-with", "$Content-Type", "video/"],
-    ],
-  });
-
-  return { url, fields, key };
+    ContentLength: fileSize,
+    ContentType:contentType
+  })
+  const presignedUrl = await getSignedUrl(s3, cmd, {
+      expiresIn: 360, // URL expires in 6 minutes,
+          signableHeaders: new Set(["host", "content-type","content-length"]),
+    });
+  
+  return { url:presignedUrl, key };
 }

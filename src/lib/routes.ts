@@ -1,4 +1,4 @@
-import { ClipIcon, ClosedCaptionIcon, CodeIcon, MetaIcon, PlusSignIcon, TranslateIcon, UserIcon } from "@hugeicons/core-free-icons";
+import { ClipIcon, ClosedCaptionIcon, CodeIcon, MetaIcon, PlusSignIcon, TranslateIcon, UserIcon, VideoIcon } from "@hugeicons/core-free-icons";
 type IconSvgObject = ([string, {
     [key: string]: string | number;
 }])[] | readonly (readonly [string, {
@@ -14,6 +14,16 @@ type routes =   { name: string;
 
 }
 export const routes = [
+    {
+        name:"General",
+        routes:[
+              {
+                name:"Your Videos",
+                icon:VideoIcon,
+                route:'/videos'
+            },
+        ]
+    },
     {
         name:"Captions",
         icon:ClosedCaptionIcon,

@@ -186,7 +186,6 @@
 @layer base {
   body {
     letter-spacing: var(--tracking-normal);
-    @apply bg-background text-foreground;
   }
   * {
     @apply border-border outline-ring/50;

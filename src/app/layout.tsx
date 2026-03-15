@@ -5,6 +5,8 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { shadcn } from '@clerk/themes'
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { Toaster } from "sonner";
+import { TRPCReactProvider } from "@/trpc/client";
 const figtree = Figtree({subsets:['latin'],variable:'--font-sans'});
 const font = DM_Sans({
   subsets:["latin"]
@@ -30,10 +32,13 @@ export default function RootLayout({
   >
       <html lang="en" >
       <body
-        className={` antialiased ${font.className}`}
+        className={` antialiased bg-sidebar ${font.className}`}
       >
      <TooltipProvider>
-         {children}
+      <Toaster/>
+         <TRPCReactProvider>
+          {children}
+         </TRPCReactProvider>
      </TooltipProvider>
       </body>
     </html>

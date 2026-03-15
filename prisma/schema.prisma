@@ -13,10 +13,8 @@ datasource db {
 }
 enum VideoProcessingStatus {
   UPLOADING
-  PROCESSING
-  FAILED_UPLOADING
-  FAILED_PROCESSING
-  FINALIZED
+  FINISHED_UPLOADING
+  FAILED
 }
 model Video {
   id String @id @default(cuid())

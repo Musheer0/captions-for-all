@@ -1,4 +1,5 @@
 "use client"
+import { SidebarThemeToggle } from '@/components/sidebar-mode-toggle'
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
 import { routes } from '@/lib/routes'
@@ -12,7 +13,7 @@ import React from 'react'
 const AppSidebar = () => {
   const pathname =usePathname()
   return (
-    <Sidebar collapsible='icon'>
+    <Sidebar collapsible='icon' className=''>
         <SidebarRail/>
         <SidebarHeader>
         <SidebarMenu className='flex group-data-[collapsible=icon]:py-2 items-center gap-2 flex-row'>
@@ -41,8 +42,7 @@ const AppSidebar = () => {
                             return (
                                 <Link href={route.route} key={i}>
                                     <SidebarMenuButton 
-                                    className='data-active:border border-muted-foreground/50 data-active:shadow-[0px_0px_2px_1px_rgba(255,255,255,1)]!
-                                    data-active:after:hidden! [--border:color-mix(in_srgb,transparent,var(--clerk-color-neutral,#000000)_15%)]!
+                                    className='
                                     data-active:hover:bg-primary/10 data-active:bg-muted-foreground/10 data-active:rounded-md'
                                     isActive={pathname.includes(route.route)} tooltip={route.name} key={i}>
                                         <HugeiconsIcon
@@ -56,7 +56,8 @@ const AppSidebar = () => {
                     </SidebarGroupContent>
                 </SidebarGroup>
             )
-        })}
+          })}
+          <SidebarThemeToggle/>
         </SidebarContent>
         <SidebarFooter>
   <UserButton
