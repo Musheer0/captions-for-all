@@ -16,6 +16,11 @@ enum VideoProcessingStatus {
   FINISHED_UPLOADING
   FAILED
 }
+
+enum UploadType {
+  USER_UPLOADED
+  SERVER_GENERATED
+}
 model Video {
   id String @id @default(cuid())
 
@@ -27,7 +32,7 @@ model Video {
   lang String @default("en")
 
   status VideoProcessingStatus @default(UPLOADING)
-
+  type UploadType @default(USER_UPLOADED)
   captions Caption[]
   generations VideoGeneration[]
 
@@ -52,29 +57,30 @@ model Caption {
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-
+  isOriginal Boolean @default(false)
   @@index([video_id])
   @@index([user_id])
   @@unique([video_id, lang])
 }
 
+enum BurnType {
+  SOFT
+  HARD
+}
 model VideoGeneration {
   id String @id @default(cuid())
-
   object_key String
   lang String @default("en")
-
   video_id String
   video Video @relation(fields: [video_id], references: [id], onDelete: Cascade)
-
   caption_id String?
   caption Caption? @relation(fields: [caption_id], references: [id], onDelete: SetNull)
-
   user_id String
+  burn_type BurnType @default(SOFT)
+  isOriginal Boolean @default(false)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-
   @@index([video_id])
   @@index([caption_id])
   @@index([user_id])
