@@ -71,6 +71,43 @@ export const VideoRouters = createTRPCRouter({
       nextCursor,
     };
   }),
+  getGeneratedVideos: protectedProcedure
+  .input(
+    z.object({
+      limit: z.number().min(1).max(50).default(10),
+      cursor: z.string().optional(),
+    })
+  )
+  .query(async ({ ctx, input }) => {
+
+    const userId = ctx.session.userId;
+
+    const videos = await prisma.video.findMany({
+      where: {
+        user_id: userId, // SECURITY
+        type:"SERVER_GENERATED"
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+      take: input.limit + 1,
+      cursor: input.cursor
+        ? { id: input.cursor }
+        : undefined,
+    });
+
+    let nextCursor: string | undefined = undefined;
+
+    if (videos.length > input.limit) {
+      const nextItem = videos.pop();
+      nextCursor = nextItem!.id;
+    }
+
+    return {
+      videos,
+      nextCursor,
+    };
+  }),
   getVideoById: protectedProcedure
   .input(
     z.object({

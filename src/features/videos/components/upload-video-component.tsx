@@ -14,9 +14,11 @@ import {
   Delete02Icon,
 } from '@hugeicons/core-free-icons'
 import { VideoFileStore } from '../store/video-files-store'
+import { cn } from '@/lib/utils'
 
 interface Props {
-  onUploadComplete?: () => void
+  onUploadComplete?: () => void,
+  className?:string
 }
 
 interface FileWithStatus {
@@ -41,7 +43,7 @@ function fileKey(file: File): string {
   return `${file.name}__${file.size}__${file.lastModified}`
 }
 
-const UploadVideo: React.FC<Props> = ({onUploadComplete}) => {
+const UploadVideo: React.FC<Props> = ({onUploadComplete,className}) => {
   const { addPendingFiles, uploadingFile } = VideoFileStore()
   const [files, setFiles] = useState<FileWithStatus[]>([])
 
@@ -154,7 +156,9 @@ const UploadVideo: React.FC<Props> = ({onUploadComplete}) => {
   })
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-3 p-1">
+    <div className={cn(
+      className,"w-full max-w-2xl mx-auto space-y-3 p-1 overflow-y-auto max-h-full"
+    )}>
       {/* Drop Zone */}
       <div
         {...getRootProps()}

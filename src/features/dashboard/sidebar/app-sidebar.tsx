@@ -34,13 +34,13 @@ const AppSidebar = () => {
         {routes.map((section, i)=>{
             return(
                       <SidebarGroup key={i} >
-                    <SidebarGroupContent>
+                    <SidebarGroupContent >
                         <SidebarGroupLabel>
                             {section.name}
                         </SidebarGroupLabel>
                         {section.routes.map((route,i)=>{
                             return (
-                                <Link href={route.route} key={i}>
+                                <Link href={route.route} key={i} className='my-2.5'>
                                     <SidebarMenuButton 
                                     className='
                                     data-active:hover:bg-primary/10 data-active:bg-muted-foreground/10 data-active:rounded-md'
