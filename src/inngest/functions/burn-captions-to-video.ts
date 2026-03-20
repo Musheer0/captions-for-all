@@ -11,6 +11,7 @@ export const burnCaptionsToVideo = inngest.createFunction(
     {id:"burn-captions",retries:0},
     {event:"event/burn-captions"},
      async ({ event, step }) => {
+      console.log('hi',event.data)
     const {data,error} = AddCaptionsToVideoInngestSchema.safeParse(event.data)
     if(error){
       throw new NonRetriableError(JSON.stringify(error))
@@ -82,7 +83,6 @@ export const burnCaptionsToVideo = inngest.createFunction(
         where:{
           user_id:data.userId,
           video_id:data.video_id,
-          lang:data.language_code
         }
       });
     }
@@ -141,6 +141,14 @@ export const burnCaptionsToVideo = inngest.createFunction(
         }
       });
       if(!data) throw new NonRetriableError("error generating captions")
+       await prisma.video.update({
+      where:{
+        id:video.id
+      },
+      data:{
+        lang:data.language
+      }
+      })
       return data
     });
     //save to db

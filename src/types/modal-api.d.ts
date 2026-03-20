@@ -25,8 +25,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Burn Captions */
-        post: operations["burn_captions_burn_captions_post"];
+        /** Hard Burn Captions */
+        post: operations["hard_burn_captions_burn_captions_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -42,8 +42,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Burn Captions */
-        post: operations["burn_captions_soft_burn_captions_post"];
+        /** Soft Burn Captions */
+        post: operations["soft_burn_captions_soft_burn_captions_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -146,7 +146,7 @@ export interface operations {
             };
         };
     };
-    burn_captions_burn_captions_post: {
+    hard_burn_captions_burn_captions_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -179,7 +179,7 @@ export interface operations {
             };
         };
     };
-    burn_captions_soft_burn_captions_post: {
+    soft_burn_captions_soft_burn_captions_post: {
         parameters: {
             query?: never;
             header?: never;

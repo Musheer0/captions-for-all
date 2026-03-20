@@ -67,6 +67,7 @@ export const VideoCard = ({ video }: { video: Video }) => {
 
           <span className="text-border">·</span>
 
+          {video.type==="SERVER_GENERATED"?<LangBadge lang={"Generated"} />:<LangBadge lang={"Uploaded"} />}
           <LangBadge lang={video.lang} />
           <StatusBadge status={video.status} />
         </div>

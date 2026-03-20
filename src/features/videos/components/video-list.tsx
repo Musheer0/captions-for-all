@@ -17,13 +17,14 @@ import { toast } from "sonner"
 interface VideoList {
   selectedVideos? :Video[],
   onSelect?:(data:Video)=>void,
-  onDeSelect?:(id:string)=>void
+  onDeSelect?:(id:string)=>void,
+  generatedOnly?:boolean
 }
-const VideoList:React.FC<VideoList> = ({selectedVideos,onSelect,onDeSelect}) => {
+const VideoList:React.FC<VideoList> = ({selectedVideos,onSelect,onDeSelect,generatedOnly}) => {
   const trpc = useTRPC()
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery(
-      trpc.video.getVideos.infiniteQueryOptions(
+      (generatedOnly? trpc.video.getGeneratedVideos:trpc.video.getVideos).infiniteQueryOptions(
         { limit: 10 },
         { getNextPageParam: (lastPage) => lastPage.nextCursor }
       )

@@ -22,23 +22,17 @@ export const routes = [
                 icon:VideoIcon,
                 route:'/videos'
             },
-        ]
-    },
-    {
-        name:"Captions",
-        icon:ClosedCaptionIcon,
-        routes:[
-            {
-                name:"Translate Captions",
-                icon:TranslateIcon,
-                route:'/translate-captions'
-            },
-            {
+               {
                 name:"Add Captions To Video",
                 icon:PlusSignIcon,
                 route:'/add-captions'
             },
-        ],
+               {
+                name:"Generations",
+                icon:VideoIcon,
+                route:'/generations'
+            },
+        ]
     },
        {
         name:"For Creators",
@@ -48,11 +42,6 @@ export const routes = [
                 name:"Clipper",
                 icon:ClipIcon,
                 route:'/clipper'
-            },
-            {
-                name:"Metadata",
-                icon:MetaIcon,
-                route:'/video-metadata'
             },
         ],
     },
