@@ -5,6 +5,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import {
   Video01Icon,
   Download04Icon,
+  LoaderCircle,
 } from "@hugeicons/core-free-icons"
 import { cn } from "@/lib/utils"
 import { formatBytes } from "@/features/videos/utils/video"
@@ -13,26 +14,45 @@ import { useTRPC } from "@/trpc/client"
 import { useMutation } from "@tanstack/react-query"
 import { useRemoveVideoFromCache } from "../hooks/use-delete-video-from-cache"
 import { Video } from "@/generated/prisma/client"
+import { toast } from "sonner"
 
 
 
 export const VideoCard = ({ video }: { video: Video }) => {
   const trpc = useTRPC()
   const deleteVideoCache = useRemoveVideoFromCache()
-
+  const {isPending:gettingDownloadUrl, mutateAsync:getDownloadUrl} = useMutation(trpc.video.downloadFile.mutationOptions({
+    onError:()=>{
+      toast.error("error downloading video")
+    },
+    onSuccess:()=>{
+      toast.success("downloading video"+video.original_file_name)
+    }
+  }))
   const deleteVideoMutation = useMutation(
     trpc.video.deleteVideo.mutationOptions()
   )
 
   const isFailed = video.status.includes("FAILED")
 
-  function handleDownload() {
-    console.log("download", {
-      id: video.id,
-      file: video.original_file_name,
-      key: video.object_key,
-    })
+async function handleDownload() {
+  try {
+    const data = await getDownloadUrl({id:video.id});
+
+    if (!data?.url) return;
+
+    const a = document.createElement("a");
+    a.href = data.url;
+
+    a.download = video.lang+"-"+video.original_file_name || "video";
+
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  } catch (err) {
+    console.error(err);
   }
+}
 
   async function handleDelete() {
     await deleteVideoMutation.mutateAsync({ videoId: video.id })
@@ -74,13 +94,19 @@ export const VideoCard = ({ video }: { video: Video }) => {
       </div>
 
       {/* actions */}
-      <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className={cn(
+        "flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity",
+        gettingDownloadUrl && "opacity-100"
+      )}>
         <button
           onClick={handleDownload}
-          disabled={isFailed}
+          disabled={isFailed||gettingDownloadUrl}
           className="flex items-center justify-center w-8 h-8 rounded-lg text-muted-foreground hover:text-emerald-600 hover:bg-emerald-500/10 disabled:opacity-30 disabled:pointer-events-none transition-colors"
         >
-          <HugeiconsIcon icon={Download04Icon} size={15} />
+          {gettingDownloadUrl ?
+        <HugeiconsIcon icon={LoaderCircle} size={15}  className="animate-spin"/>:
+        <HugeiconsIcon icon={Download04Icon} size={15} />  
+        }
         </button>
 
         {/* optional delete */}

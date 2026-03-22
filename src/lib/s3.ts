@@ -25,10 +25,11 @@ export const deleteObject = async (key: string) => {
   );
 };
 
-export const getSignedObjectUrl = async (key: string) => {
+export const getSignedObjectUrl = async (key: string,filename?:string) => {
   const cmd = new GetObjectCommand({
-    Bucket: process.env.R2_BUCKET_NAME ?? "",
+    Bucket: process.env.BUCKET_NAME ?? "",
     Key: key,
+    ResponseContentDisposition:`attachment; filename="${filename || "video.mp4"}"`
   });
   return getSignedUrl(s3, cmd, { expiresIn: 36000 });
 };

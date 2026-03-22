@@ -31,3 +31,5 @@ export function normalizeLang(input: string) {
 
   return found || null
 }                               
+
+export const getdownloadpage = (id:string)=>`${process.env.NEXT_PUBLIC_APP}/generations/${id}`

@@ -2,8 +2,8 @@ import { AddCaptionsToVideoSchema } from "@/features/translate-captions/schema";
 import { createTRPCRouter, protectedProcedure } from "../init";
 import { getVideoById } from "@/features/videos/actions";
 import { TRPCError } from "@trpc/server";
-import prisma from "@/lib/prisma";
 import { inngest } from "@/inngest/client";
+import { getUserEmail } from "@/lib/get-user-email";
 
 export const CaptionsRouter = createTRPCRouter({
     addCaptions:protectedProcedure.input(AddCaptionsToVideoSchema)
@@ -14,7 +14,7 @@ export const CaptionsRouter = createTRPCRouter({
         if(!video) throw new TRPCError({code:"NOT_FOUND"})
         if(video.user_id!==ctx.session.userId) throw new TRPCError({code:"UNAUTHORIZED"})
         await inngest.send({
-        data:{...input,userId:ctx.session.userId,video_id:id},
+        data:{...input,userId:ctx.session.userId,video_id:id,userEmail:await getUserEmail(ctx.session.userId)},
         name:"event/burn-captions"
         })
         console.log('send')

@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma";
 import { createTRPCRouter, protectedProcedure } from "../init";
 import { TRPCError } from "@trpc/server";
 import { generateObjectKey } from "@/lib/generate-object-key";
-import { deleteObject, getS3UploadUrl } from "@/lib/s3";
+import { deleteObject, getS3UploadUrl, getSignedObjectUrl } from "@/lib/s3";
 import z, { file } from "zod";
 import { VideoProcessingStatus } from "@/generated/prisma/enums";
 
@@ -18,7 +18,7 @@ export const VideoRouters = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       try {
         const userId = ctx.session.userId;
-        const objectKey =generateObjectKey(userId)
+        const objectKey =generateObjectKey(userId)+input.file_name
         const video =  await prisma.video.create({
           data:{
             user_id: userId,
@@ -187,4 +187,28 @@ export const VideoRouters = createTRPCRouter({
    })
     return { success: true };
   }),
+  downloadFile:protectedProcedure.input(z.object({id:z.string()}))
+  .mutation(async({ctx,input})=>{
+    const session = ctx.session
+    const videoId = input.id
+      if (!videoId) {
+        throw new Error("Video ID required");
+    }
+
+    const video = await prisma.video.findFirst({
+        where: {
+            id: videoId,
+            user_id: session.userId,
+            status: "FINISHED_UPLOADING",
+        },
+    });
+
+    if (!video) {
+        throw new Error("Video not found or not yours");
+    }
+
+    const url = await getSignedObjectUrl(video.object_key,`${video.lang}-${video.original_file_name}`);
+
+    return { url };
+  })
 });

@@ -15,7 +15,7 @@ const AddCaptionButton = () => {
   const { mutate, isPending, isError, error } = useMutation({
     ...trpc.captions.addCaptions.mutationOptions(),
     onSuccess: () => {
-      toast.success('Captions added successfully!',{position:"top-center"})
+      toast.success('adding captions you will receive an email when done!',{position:"top-center"})
     },
     onError: (err) => {
       toast.error(err?.message ?? 'Failed to add captions. Please try again.',{position:"top-center"})

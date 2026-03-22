@@ -38,7 +38,6 @@ model Video {
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-
   @@index([user_id])
 }
 
@@ -67,6 +66,10 @@ enum BurnType {
   SOFT
   HARD
 }
+enum VideoType {
+  VIDEO
+  CLIP
+}
 model VideoGeneration {
   id String @id @default(cuid())
   object_key String
@@ -78,11 +81,14 @@ model VideoGeneration {
   user_id String
   burn_type BurnType @default(SOFT)
   isOriginal Boolean @default(false)
-
+  type    VideoType @default(VIDEO)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   @@index([video_id])
   @@index([caption_id])
   @@index([user_id])
   @@index([video_id, lang])
+  @@index([type])
+  @@index([user_id, type])
+  @@index([user_id, video_id,type])
 }

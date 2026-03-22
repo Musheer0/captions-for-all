@@ -10,5 +10,6 @@ export const  AddCaptionsToVideoInngestSchema = z.object({
     video_id:z.string(),
     language_code:z.string(),
     burn_type:z.enum(["soft","hard"]),
-    userId:z.string()
+    userId:z.string(),
+    userEmail:z.string()
 })
