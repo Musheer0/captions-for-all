@@ -50,6 +50,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/clip-video": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Clip Video */
+        post: operations["clip_video_clip_video_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -75,6 +92,19 @@ export interface components {
             caption_key: string;
             /** Lang Code */
             lang_code: string;
+        };
+        /** ClipVideoRequest */
+        ClipVideoRequest: {
+            /** Video Id */
+            video_id: string;
+            /** Video Key */
+            video_key: string;
+            /** Caption Key */
+            caption_key: string;
+            /** Clip Count */
+            clip_count: string;
+            /** User Id */
+            user_id: string;
         };
         /** ExtractCaptionResponse */
         ExtractCaptionResponse: {
@@ -199,6 +229,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["BurnCaptionResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    clip_video_clip_video_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClipVideoRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
             /** @description Validation Error */

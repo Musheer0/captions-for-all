@@ -18,9 +18,15 @@ class BurnCaptionToVideo(BaseModel):
 class ExtractCaptionResponse(BaseModel):
         result_key: str
         language: str
+class ClipVideoRequest(BaseModel):
+        video_id:str
+        video_key:str
+        caption_key:str
+        clip_count:str
+        user_id:str
 
-
-
+class ClipVideoResponse(BaseModel):
+        clips:list[str]
 class ExtractCaptionResult(TypedDict):
     language: str
     raw_segments: Any
