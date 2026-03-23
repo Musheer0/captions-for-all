@@ -161,3 +161,166 @@ export const SendFailureVideoProccessHtml= ({userEmail,language}:{userEmail:stri
 </html>
     `
 }
+export const sendClipsReadyHtml = ({
+  videoId,
+  userEmail,
+  clipCount,
+}: {
+  videoId: string;
+  userEmail: string;
+  clipCount: number;
+}) => {
+  const downloadUrl = `${process.env.NEXT_PUBLIC_APP_URL}/clips/${videoId}`;
+
+  return `
+  <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Your Clips Are Ready</title>
+  </head>
+  <body style="margin:0; padding:0; font-family: Arial, sans-serif; background-color:#f4f4f4;">
+    
+    <table align="center" width="100%" cellpadding="0" cellspacing="0" style="padding:20px;">
+      <tr>
+        <td align="center">
+          
+          <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:8px; overflow:hidden;">
+            
+            <!-- Header -->
+            <tr>
+              <td style="background:#111827; color:#ffffff; padding:20px; text-align:center;">
+                <h2 style="margin:0;">✂️ Your Clips Are Ready</h2>
+              </td>
+            </tr>
+
+            <!-- Body -->
+            <tr>
+              <td style="padding:30px; color:#333333;">
+                
+                <p style="font-size:16px;">
+                  Hey <strong>${userEmail}</strong>,
+                </p>
+
+                <p style="font-size:16px;">
+                  We’ve successfully processed your video and generated 
+                  <strong>${clipCount} clips</strong> for you.
+                </p>
+
+                <p style="font-size:16px;">
+                  Your viral moments are cooked and ready 🍿
+                </p>
+
+                <!-- Button -->
+                <table align="center" cellpadding="0" cellspacing="0" style="margin:20px 0;">
+                  <tr>
+                    <td align="center" bgcolor="#2563eb" style="border-radius:6px;">
+                      <a href="${downloadUrl}" 
+                         style="display:inline-block; padding:14px 24px; font-size:16px; color:#ffffff; text-decoration:none; font-weight:bold;">
+                        ⬇ View & Download Clips
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+
+                <p style="font-size:14px; color:#666;">
+                  If the button doesn’t work, copy and paste this link:
+                </p>
+
+                <p style="font-size:14px; word-break:break-all; color:#2563eb;">
+                  ${downloadUrl}
+                </p>
+
+                <p style="font-size:14px; color:#999; margin-top:30px;">
+                  If you didn’t request this, just ignore this email.
+                </p>
+
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="background:#f9fafb; text-align:center; padding:15px; font-size:12px; color:#888;">
+                © 2026 Captions4All. All rights reserved.
+              </td>
+            </tr>
+
+          </table>
+
+        </td>
+      </tr>
+    </table>
+
+  </body>
+</html>
+  `;
+};
+export const sendClipsFailedHtml = () => {
+  return `
+  <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Clip Generation Failed</title>
+  </head>
+  <body style="margin:0; padding:0; font-family: Arial, sans-serif; background-color:#f4f4f4;">
+    
+    <table align="center" width="100%" cellpadding="0" cellspacing="0" style="padding:20px;">
+      <tr>
+        <td align="center">
+          
+          <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:8px; overflow:hidden;">
+            
+            <!-- Header -->
+            <tr>
+              <td style="background:#dc2626; color:#ffffff; padding:20px; text-align:center;">
+                <h2 style="margin:0;">💀 Clip Generation Failed</h2>
+              </td>
+            </tr>
+
+            <!-- Body -->
+            <tr>
+              <td style="padding:30px; color:#333333;">
+                
+                <p style="font-size:16px;">
+                  Something went wrong while generating your clips.
+                </p>
+
+                <p style="font-size:16px;">
+                  The request couldn’t be completed due to an unexpected issue during processing.
+                </p>
+
+                <p style="font-size:14px; color:#555;">
+                  Possible reasons include:
+                </p>
+
+                <ul style="font-size:14px; color:#555;">
+                  <li>Video format issues</li>
+                  <li>Processing pipeline failure</li>
+                  <li>Temporary system error</li>
+                </ul>
+
+                <p style="font-size:14px; color:#999; margin-top:30px;">
+                  You can try again later.
+                </p>
+
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="background:#f9fafb; text-align:center; padding:15px; font-size:12px; color:#888;">
+                © 2026 Captions4All. All rights reserved.
+              </td>
+            </tr>
+
+          </table>
+
+        </td>
+      </tr>
+    </table>
+
+  </body>
+</html>
+  `;
+};

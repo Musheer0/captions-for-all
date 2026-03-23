@@ -3,6 +3,8 @@ import json
 from pydantic import BaseModel, field_validator, model_validator
 from typing import List
 import os
+from ai_sdk import gemini, generate_object
+
 
 class Clip(BaseModel):
     start: float
@@ -45,7 +47,7 @@ class ClipsResponse(BaseModel):
     clips: List[Clip]
 
 client = Groq(api_key=os.environ["GROQ_KEY"])
-
+model = gemini("gemini-2.5-flash",api_key=os.environ["GEMINI_KEY"])
 prompt = """
 SYSTEM ROLE:
 You are an expert short-form content editor specializing in viral video clips.
@@ -82,7 +84,7 @@ IMPORTANT:
 - No extra text
 """
 
-def clip_transcribe(srt: list, clips: int):
+def clip_transcribe_groq(srt: list, clips: int):
     completion = client.chat.completions.create(
         model="openai/gpt-oss-20b",
         messages=[
@@ -95,27 +97,30 @@ def clip_transcribe(srt: list, clips: int):
                 })
             }
         ],
-        response_format={
-            "type": "json_schema",
-            "json_schema": {
-                "type": "object",
-                "properties": {
-                    "clips": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "start": {"type": "number"},
-                                "end": {"type": "number"},
-                                "title": {"type": "string"},
-                            },
-                            "required": ["start", "end", "title"]
-                        }
+     response_format={
+    "type": "json_schema",
+    "json_schema": {              # 👈 REQUIRED wrapper
+        "name": "clips_response", # 👈 REQUIRED here
+        "schema": {
+            "type": "object",
+            "properties": {
+                "clips": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "start": {"type": "number"},
+                            "end": {"type": "number"},
+                            "title": {"type": "string"},
+                        },
+                        "required": ["start", "end", "title"]
                     }
-                },
-                "required": ["clips"]
-            }
+                }
+            },
+            "required": ["clips"]
         }
+    }
+}
     )
 
     raw = completion.choices[0].message.content
@@ -131,3 +136,34 @@ def clip_transcribe(srt: list, clips: int):
         raise ValueError(f"Schema validation failed:\n{e}")
 
     return validated.clips
+
+
+def clip_transcribe_gemini(srt: list, clips: int):
+    prompt = f"""
+You are an expert short-form content editor.
+
+Task:
+Extract viral clips from transcript.
+
+Rules:
+- Return at most {clips} clips
+- Each clip must be 5–60 seconds
+- Each clip MUST include:
+  - start (float)
+  - end (float)
+  - title (short catchy title describing the clip)
+
+Title rules:
+- 3–8 words
+- engaging / curiosity-driven
+- not empty
+
+Transcript:
+{json.dumps(srt)}
+"""
+    completion = generate_object(
+        model=model,
+        prompt=prompt,
+        schema=ClipsResponse,
+    )
+    return completion.object

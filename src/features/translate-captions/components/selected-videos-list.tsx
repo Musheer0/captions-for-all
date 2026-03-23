@@ -9,6 +9,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { ArrowLeft, VideoIcon } from '@hugeicons/core-free-icons'
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { timeAgo } from '@/lib/utils'
+import ViewHeader from '@/components/view-header'
 
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -81,8 +82,25 @@ const SelectedVideosList = () => {
   const {back} = useCaptionFlowStore()
 
   return (
-    <div className="w-full border-b  pt-5 pb-3">
-      <div className="mb-3  px-2 flex items-center gap-3 justify-between">
+    <div className="w-full border-b sm:pt-20 mx-auto max-w-6xl pt-5 pb-3">
+      <ViewHeader hideSearch title='Selected Videos'>
+              {selectedVideos.length > 0 && (
+          <span className="rounded-full mr-auto ml-2 bg-white/[0.08] px-2 py-0.5 text-[11px] font-medium text-white/40">
+            {selectedVideos.length}
+          </span>
+        )}
+        <div className="mb-3 flex  px-2  items-center gap-3 justify-between">
+        <Button onClick={back} className={''}>
+            <HugeiconsIcon
+            icon={ArrowLeft}
+            />
+            Go Back
+        </Button>
+      
+  
+      </div>
+      </ViewHeader>
+      <div className="mb-3 flex  px-2 sm:hidden items-center gap-3 justify-between">
         <Button onClick={back} className={''}>
             <HugeiconsIcon
             icon={ArrowLeft}

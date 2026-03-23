@@ -20,6 +20,7 @@ enum VideoProcessingStatus {
 enum UploadType {
   USER_UPLOADED
   SERVER_GENERATED
+  SERVER_GENERATED_CLIP
 }
 model Video {
   id String @id @default(cuid())

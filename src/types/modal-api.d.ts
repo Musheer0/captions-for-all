@@ -106,6 +106,11 @@ export interface components {
             /** User Id */
             user_id: string;
         };
+        /** ClipVideoResponse */
+        ClipVideoResponse: {
+            /** Clips */
+            clips: components["schemas"]["UploadedClip"][];
+        };
         /** ExtractCaptionResponse */
         ExtractCaptionResponse: {
             /** Result Key */
@@ -124,6 +129,15 @@ export interface components {
             video_key: string;
             /** Video Id */
             video_id: string;
+        };
+        /** UploadedClip */
+        UploadedClip: {
+            /** Path */
+            path: string;
+            /** Name */
+            name: string;
+            /** Size */
+            size: number;
         };
         /** ValidationError */
         ValidationError: {
@@ -261,7 +275,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["ClipVideoResponse"];
                 };
             };
             /** @description Validation Error */

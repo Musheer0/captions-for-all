@@ -1,4 +1,4 @@
-from libs.extract_clips_trabscribe import clip_transcribe
+from libs.extract_clips_trabscribe import clip_transcribe_gemini
 from pathlib import Path
 import subprocess
 import uuid
@@ -26,16 +26,18 @@ def extract_clips_from_video(
     video_path: str,
     video_id: str
 ):
-    clips = clip_transcribe(srt, clips=clips_count)
-
+    print("clipping transcribe-----------------------------------")
+    clips = clip_transcribe_gemini(srt, clips=clips_count)
+    print("clipped transcribe-----------------------------------")
     output_dir = Path("clips")
     output_dir.mkdir(exist_ok=True)
 
     temp_paths: list[TempClip] = []
 
-    for clip in clips:
+    for clip in clips.clips:
         try:
             #  validate BEFORE ffmpeg
+            print("clipping video", clip)
             valid_clip = TempClip(
                 path="",
                 title=clip.title,
@@ -74,5 +76,5 @@ def extract_clips_from_video(
                 end=valid_clip.end
             )
         )
-
+    print("clipped videos")
     return temp_paths

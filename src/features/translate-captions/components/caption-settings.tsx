@@ -56,7 +56,7 @@ const CaptionSettings = () => {
   )
 
   return (
-    <div className="flex flex-col h-full mb-20 sm:mb-0 border-b flex-1 w-full min-h-0 overflow-y-auto">
+    <div className="flex flex-col mx-auto max-w-6xl h-full mb-20 sm:mb-0 border-b flex-1 w-full min-h-0 overflow-y-auto">
 
       {/* ── Two-column grid on md+, single col on mobile ── */}
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-0 divide-y md:divide-y-0 md:divide-x divide-border/40">

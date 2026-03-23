@@ -8,7 +8,7 @@ import sys
 import traceback
 import uuid
 print("VERSION 3")
-image =  modal.Image.debian_slim(python_version="3.10").apt_install(
+image =  modal.Image.debian_slim(python_version="3.12").apt_install(
     "ffmpeg",
     "wget",
     "fontconfig",
@@ -20,11 +20,12 @@ image =  modal.Image.debian_slim(python_version="3.10").apt_install(
     "fc-cache -fv",
     "fc-list | grep -i noto || true"    #log
     ).uv_pip_install(
-    "whisperx==3.8.2",
-    "fastapi[standard]==0.124.4",
-    "peft==0.18.0",
+    "whisperx",
+    "fastapi[standard]",
+    "peft",
     "uuid",
-    "groq"
+    "groq",
+    "ai-sdk-python"
 ).add_local_dir('.','/root',copy=True)
 
 
@@ -47,7 +48,7 @@ with image.imports():
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.security import APIKeyHeader
     from libs.srt_utils import  format_to_words_srt,seconds_to_srt_time,words_to_srt
-    from libs.schemas import BurnCaptionResponse,ProcessVideoRequest,SrtSegment,ExtractCaptionResponse,ExtractCaptionResult,BurnCaptionToVideo,ClipVideoRequest,ClipVideoResponse
+    from libs.schemas import BurnCaptionResponse,ProcessVideoRequest,SrtSegment,ExtractCaptionResponse,ExtractCaptionResult,BurnCaptionToVideo,ClipVideoRequest,ClipVideoResponse,UploadedClip
     from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
     from fastapi import Depends
     import subprocess
@@ -57,7 +58,7 @@ with image.imports():
     from libs.burn_captions import burn_caption_to_video, soft_burn_caption_to_video
     from libs.srt_utils import format_to_words_srt,words_to_srt
     from libs.translate_captions import translate_captions
-    from libs.clip_video import extract_clips_from_video
+    from libs.clip_video import extract_clips_from_video,TempClip
     api_key_schema = APIKeyHeader(
         name='x-internal-key',
         scheme_name="ApiKeyAuth",
@@ -290,23 +291,31 @@ class CFA:
 
             if "srt" not in captions or not captions["srt"]:
                 raise HTTPException(status_code=400, detail="empty captions")
+            
+            lang = captions.get("language", "auto")
 
-            translated_srt = translate_captions(
-            srt=captions["srt"],
-            target="en",
-            source=captions.get("language", "auto")
-        )
+            translated_srt =(
+                translate_captions(
+                srt=captions["srt"],
+                target="en",
+                source=lang
+            )
+            if lang!="en"
+            else captions["srt"]
+            )
+
 
             clips = extract_clips_from_video(
                 srt=translated_srt,
-                clip_count=request.clip_count,
+                clips_count=request.clip_count,
                 video_id=request.video_id,
                 video_path=str(video_path)
             )
 
-            clips_object_keys: list[str] = []
-
+            clips_object_keys: list[UploadedClip] = []
+            print("upload videos")
             for clip in clips:
+                print("uploading",clip)
                 try:
                     safe_title = safe_filename(clip.title)
 
@@ -318,8 +327,8 @@ class CFA:
 
                     s3_new_path = Path(s3_MOUNT_PATH) / new_path
                     shutil.copy(clip.path, s3_new_path)
-
-                    clips_object_keys.append(new_path)
+                    uploaded_clip = UploadedClip(path=new_path,name=safe_title,size=os.path.getsize(clip.path))
+                    clips_object_keys.append(uploaded_clip)
 
                 except Exception as e:
                     print("Failed to process clip:", e)
@@ -327,6 +336,6 @@ class CFA:
                 finally:
                     if os.path.exists(clip.path):
                         os.remove(clip.path)
-
+            print("finished uploading videos",clips_object_keys)
             return {"clips": clips_object_keys}
         return web_app
