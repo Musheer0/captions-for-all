@@ -235,7 +235,7 @@ const UploadVideo: React.FC<Props> = ({onUploadComplete,className}) => {
             <HugeiconsIcon icon={AlertCircleIcon} size={18} color="currentColor" strokeWidth={1.5} />
           </span>
           <p className="flex-1 text-xs text-amber-700 dark:text-amber-300 font-medium">
-            {duplicateFiles.length} duplicate file{duplicateFiles.length !== 1 ? 's' : ''} detected — {duplicateFiles.length !== 1 ? 'they' : 'it'} will be skipped on upload.
+            {duplicateFiles.length} duplicate file{duplicateFiles.length !== 1 ? 's' : ''} detected   {duplicateFiles.length !== 1 ? 'they' : 'it'} will be skipped on upload.
           </p>
           <button
             onClick={removeDuplicates}

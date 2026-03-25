@@ -25,7 +25,8 @@ image =  modal.Image.debian_slim(python_version="3.12").apt_install(
     "peft",
     "uuid",
     "groq",
-    "ai-sdk-python"
+    "ai-sdk-python",
+    "boto3"
 ).add_local_dir('.','/root',copy=True)
 
 
@@ -43,6 +44,7 @@ with image.imports():
     import io
     import os
     import json
+    import boto3
     from pathlib import Path
     from fastapi import Depends, FastAPI, HTTPException, Security
     from fastapi.middleware.cors import CORSMiddleware
@@ -59,6 +61,13 @@ with image.imports():
     from libs.srt_utils import format_to_words_srt,words_to_srt
     from libs.translate_captions import translate_captions
     from libs.clip_video import extract_clips_from_video,TempClip
+    s3 = boto3.client(
+          "s3",
+        aws_access_key_id=os.environ["AWS_ACCESS_KEY_ID"],
+    aws_secret_access_key=os.environ["AWS_SECRET_ACCESS_KEY"],
+    region_name="auto",
+    endpoint_url="https://t3.storage.dev"
+    )
     api_key_schema = APIKeyHeader(
         name='x-internal-key',
         scheme_name="ApiKeyAuth",
@@ -324,9 +333,12 @@ class CFA:
                     f"{request.video_id}/"
                     f"{uuid.uuid4().hex}-{safe_title}.mp4"
                     )
-
-                    s3_new_path = Path(s3_MOUNT_PATH) / new_path
-                    shutil.copy(clip.path, s3_new_path)
+                    # create parent directories if they don't exist
+                    s3.upload_file(
+                    Filename=clip.path,
+                    Bucket="11labs",
+                    Key=new_path
+                        )
                     uploaded_clip = UploadedClip(path=new_path,name=safe_title,size=os.path.getsize(clip.path))
                     clips_object_keys.append(uploaded_clip)
 

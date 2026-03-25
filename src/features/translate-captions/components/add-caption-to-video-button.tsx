@@ -22,7 +22,7 @@ const AddCaptionButton = () => {
   const { mutate, isPending, isError, isSuccess, reset } = useMutation({
     ...trpc.captions.addCaptions.mutationOptions(),
     onSuccess: () => {
-      toast.success("Captions queued — you'll get an email when done!", { position: 'top-center' })
+      toast.success("Captions queued   you'll get an email when done!", { position: 'top-center' })
     },
     onError: (err) => {
       toast.error(err?.message ?? 'Failed to add captions. Please try again.', { position: 'top-center' })
@@ -45,7 +45,7 @@ const AddCaptionButton = () => {
   const isNoVideo = !isPending && !isSuccess && !isError && !hasVideo
   const isIdle    = !isPending && !isSuccess && !isError &&  hasVideo
 
-  // One travelling light streak — colour shifts per state
+  // One travelling light streak   colour shifts per state
   // Kept deliberately subtle: the base is near-transparent, peak is ~85% opacity
   const ringVars = isSuccess
     ? { '--h': '142', '--s': '70%', '--l': '52%' } as React.CSSProperties
@@ -172,7 +172,7 @@ const AddCaptionButton = () => {
               {isNoVideo && 'Select a video first'}
               {isPending && 'Adding captions…'}
               {isSuccess && 'Captions queued!'}
-              {isError   && 'Failed — tap to retry'}
+              {isError   && 'Failed   tap to retry'}
             </span>
           </button>
         </div>

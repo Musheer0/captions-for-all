@@ -36,10 +36,12 @@ model Video {
   type UploadType @default(USER_UPLOADED)
   captions Caption[]
   generations VideoGeneration[]
-
+  clips Clip[]
+  clip_id String?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   @@index([user_id])
+  @@index([object_key, type,user_id])
 }
 
 model Caption {
@@ -92,4 +94,16 @@ model VideoGeneration {
   @@index([type])
   @@index([user_id, type])
   @@index([user_id, video_id,type])
+}
+
+model Clip {
+    id String @id @default(cuid())
+    video_id String? 
+    video Video? @relation(references: [id], fields: [video_id], onDelete: SetNull)
+    user_id String
+    video_name String
+    clips_count Int @default(1)
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
 }

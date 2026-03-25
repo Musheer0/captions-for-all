@@ -15,6 +15,9 @@ const page = () => {
           </Button>
         </div>
       </PageHeader>
+      <div className="w-full flex-1 flex items-center justify-center">
+        <p className="text-5xl font-bold  pt-20">Captions4All Cli Soon...</p>
+      </div>
     </div>
   );
 };

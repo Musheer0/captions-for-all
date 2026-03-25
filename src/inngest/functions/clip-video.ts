@@ -14,8 +14,9 @@ export const clipVideo = inngest.createFunction(
     if(error){
         throw new NonRetriableError(JSON.stringify(error))
     }
-
-    //step 1 get captions
+    // security checks are done on server before bg job trigger
+    const video = await prisma.video.findUnique({where:{id:data.video_id}})
+    if(!video) throw new NonRetriableError("Video not found")
     var caption = await prisma.caption.findFirst({
       where:{
         video_id:data.video_id,
@@ -85,6 +86,14 @@ export const clipVideo = inngest.createFunction(
         return response.data
       }
     )
+    const clip = await prisma.clip.create({
+      data:{
+        user_id:data.userId,
+        video_name:video.original_file_name||"no name",
+        video_id:video.id,
+        clips_count: clip_response.clips.length
+      }
+    })
     //save clips
      await prisma.video.createMany({
       data:clip_response.clips.map((c)=>{
@@ -92,17 +101,20 @@ export const clipVideo = inngest.createFunction(
         user_id:data.userId,
         object_key:c.path,
         type:UploadType.SERVER_GENERATED_CLIP,
-         original_file_name:c.name,
-        size:c.size
+         original_file_name:c.name.includes('.mp4') ? c.name :c.name+".mp4",
+        size:c.size,
+          clip_id:clip.id,
+          status:"FINISHED_UPLOADING"
       }
       }),
     })
+    
      await inngest.send({
           name: "event/send-email",
           data: {
             to: data.userEmail,
             subject: "Successfully Clipped Your Video ",
-            html:sendClipsReadyHtml({videoId:data.video_id,userEmail:data.userEmail,clipCount:data.clip_count})
+            html:sendClipsReadyHtml({videoId:clip.id,userEmail:data.userEmail,clipCount:data.clip_count})
           },
         });
     

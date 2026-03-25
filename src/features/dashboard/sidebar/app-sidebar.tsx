@@ -22,7 +22,7 @@ const AppSidebar = () => {
                  <Image
         width={25}
         height={25}
-        src={'logo.svg'}
+        src={'/logo.svg'}
         alt='logo'
         />
         <p className='font-semibold group-data-[collapsible=icon]:hidden'>Captions4All</p>

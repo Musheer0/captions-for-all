@@ -25,7 +25,7 @@ const options: Option[] = [
     title: "Soft Subtitles",
     badge: "Recommended",
     badgeColor: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
-    description: "Subtitles appear as a separate track. Viewers can turn them on or off anytime — like Netflix captions.",
+    description: "Subtitles appear as a separate track. Viewers can turn them on or off anytime   like Netflix captions.",
   },
   {
     value: "hard",

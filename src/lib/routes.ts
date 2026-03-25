@@ -1,4 +1,4 @@
-import { CameraVideoIcon, ClipIcon, ClosedCaptionIcon, CodeIcon, MetaIcon, PlusSignIcon, TranslateIcon, UserIcon, VideoIcon } from "@hugeicons/core-free-icons";
+import { CameraVideoIcon, ClipIcon, ClosedCaptionIcon, CodeIcon, MetaIcon, PlusSignIcon, Scissor01Icon, TranslateIcon, UserIcon, VideoIcon } from "@hugeicons/core-free-icons";
 type IconSvgObject = ([string, {
     [key: string]: string | number;
 }])[] | readonly (readonly [string, {
@@ -40,7 +40,7 @@ export const routes = [
         routes:[
             {
                 name:"Clip Video",
-                icon:ClipIcon,
+                icon:Scissor01Icon,
                 route:'/clipper'
             },
                 {
