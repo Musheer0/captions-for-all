@@ -5,6 +5,9 @@ import { generateObjectKey } from "@/lib/generate-object-key";
 import { deleteObject, getS3UploadUrl, getSignedObjectUrl } from "@/lib/s3";
 import z, { file } from "zod";
 import { VideoProcessingStatus } from "@/generated/prisma/enums";
+import { getUserEmail } from "@/lib/get-user-email";
+import { inngest } from "@/inngest/client";
+import { clipVideoRequest } from "@/features/clip-videos/schemas";
 
 export const VideoRouters = createTRPCRouter({
   getUploadUrl: protectedProcedure
@@ -49,6 +52,7 @@ export const VideoRouters = createTRPCRouter({
     const videos = await prisma.video.findMany({
       where: {
         user_id: userId, // SECURITY
+        type:"USER_UPLOADED"
       },
       orderBy: {
         created_at: "desc",
@@ -210,5 +214,32 @@ export const VideoRouters = createTRPCRouter({
     const url = await getSignedObjectUrl(video.object_key,`${video.lang}-${video.original_file_name}`);
 
     return { url };
+  }),
+  clip_video :protectedProcedure
+  .input(z.object({
+    video_id:z.string(),
+    clip_count:z.number().min(1).max(6).default(1)
+  }))
+  .mutation(async({ctx,input})=>{
+    const userId= ctx.session.userId
+    const userEmail = await getUserEmail(userId)
+    const video = await prisma.video.findFirst({
+      where:{
+        id:input.video_id,
+        user_id:userId,
+        status:"FINISHED_UPLOADING"
+      }
+    });
+    if(!video) throw new TRPCError({message:'video not found', code:"NOT_FOUND"})
+    await inngest.send({
+      name:"clip-video",
+      data:{
+        clip_count:input.clip_count,
+        userId:userId,
+        userEmail,
+        video_id:video.id,
+        video_key:video.object_key
+      } as z.infer<typeof clipVideoRequest>
+    })
   })
 });

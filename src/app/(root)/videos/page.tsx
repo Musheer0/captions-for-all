@@ -1,27 +1,22 @@
 import { Button } from '@/components/ui/button'
 import PageHeader from '@/features/dashboard/page-header'
-import UploadVideoDialog from '@/features/videos/components/upload-video-dialog'
-import VideoList from '@/features/videos/components/video-list'
-import { PlusSignCircleIcon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/react'
+import UserUploadVideosView from '@/features/videos/components/user-uploaded-videos-view'
 import React from 'react'
 
 const page = () => {
   return (
-    <div className='w-full bg-sidebar h-full flex-1'>
+    <div className='w-full bg-sidebar flex h-full max-h-screen  flex-col flex-1'>
         <PageHeader  name='Videos'>
-            <UploadVideoDialog>
-              <Button
-            className={'rounded-xl'}
-            >
-                <HugeiconsIcon
-                icon={PlusSignCircleIcon}
-                />
-                Upload Video
-            </Button>
-            </UploadVideoDialog>
+          <div className="right flex items-center gap-2">
+             <Button className={"rounded-xl"}>
+            FeedBack
+           </Button>
+           <Button className={"rounded-xl"} variant={"destructive"}>
+            Help
+           </Button>
+          </div>
         </PageHeader>
-        <VideoList/>
+      <UserUploadVideosView/>
     </div>
   )
 }

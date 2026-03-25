@@ -8,7 +8,7 @@ import AddCaptionButton from '../components/add-caption-to-video-button'
 const AddCaptionView = () => {
     const {step} = useCaptionFlowStore()
   return (
-    <div  className=' flex-col   relative overflow-y-auto  min-h-0  flex-1 p-2'>
+    <div  className=' flex-col    relative overflow-y-auto  min-h-0  flex-1 p-2'>
          
       {step===CaptionStep.SELECT_VIDEO &&
       <SelectVideo/>

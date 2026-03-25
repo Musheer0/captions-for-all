@@ -1,4 +1,4 @@
-import { ClipIcon, ClosedCaptionIcon, CodeIcon, MetaIcon, PlusSignIcon, TranslateIcon, UserIcon, VideoIcon } from "@hugeicons/core-free-icons";
+import { CameraVideoIcon, ClipIcon, ClosedCaptionIcon, CodeIcon, MetaIcon, PlusSignIcon, Scissor01Icon, TranslateIcon, UserIcon, VideoIcon } from "@hugeicons/core-free-icons";
 type IconSvgObject = ([string, {
     [key: string]: string | number;
 }])[] | readonly (readonly [string, {
@@ -18,35 +18,40 @@ export const routes = [
         name:"General",
         routes:[
               {
-                name:"Your Videos",
+                name:"Videos",
                 icon:VideoIcon,
                 route:'/videos'
             },
                {
-                name:"Add Captions To Video",
-                icon:PlusSignIcon,
-                route:'/add-captions'
+                name:"Clips",
+                icon:CameraVideoIcon,
+                route:'/clips'
             },
                {
-                name:"Generations",
-                icon:VideoIcon,
+                name:"Captioned Videos",
+                icon:ClosedCaptionIcon,
                 route:'/generations'
             },
         ]
     },
        {
-        name:"For Creators",
+        name:"Studio",
         icon:UserIcon,
         routes:[
             {
-                name:"Clipper",
-                icon:ClipIcon,
+                name:"Clip Video",
+                icon:Scissor01Icon,
                 route:'/clipper'
+            },
+                {
+                name:"Caption Video",
+                icon:ClosedCaptionIcon,
+                route:'/add-captions    '
             },
         ],
     },
     {
-        name:"Scripts",
+        name:"Developers",
         icon:CodeIcon,
         routes:[{
               name:"Scripts",

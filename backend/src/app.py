@@ -1,3 +1,5 @@
+import re
+
 import modal
 from pydantic import BaseModel
 from collections import OrderedDict
@@ -6,7 +8,7 @@ import sys
 import traceback
 import uuid
 print("VERSION 3")
-image =  modal.Image.debian_slim(python_version="3.10").apt_install(
+image =  modal.Image.debian_slim(python_version="3.12").apt_install(
     "ffmpeg",
     "wget",
     "fontconfig",
@@ -18,10 +20,13 @@ image =  modal.Image.debian_slim(python_version="3.10").apt_install(
     "fc-cache -fv",
     "fc-list | grep -i noto || true"    #log
     ).uv_pip_install(
-    "whisperx==3.8.2",
-    "fastapi[standard]==0.124.4",
-    "peft==0.18.0",
-    "uuid"
+    "whisperx",
+    "fastapi[standard]",
+    "peft",
+    "uuid",
+    "groq",
+    "ai-sdk-python",
+    "boto3"
 ).add_local_dir('.','/root',copy=True)
 
 
@@ -39,12 +44,13 @@ with image.imports():
     import io
     import os
     import json
+    import boto3
     from pathlib import Path
     from fastapi import Depends, FastAPI, HTTPException, Security
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.security import APIKeyHeader
     from libs.srt_utils import  format_to_words_srt,seconds_to_srt_time,words_to_srt
-    from libs.schemas import BurnCaptionResponse,ProcessVideoRequest,SrtSegment,ExtractCaptionResponse,ExtractCaptionResult,BurnCaptionToVideo
+    from libs.schemas import BurnCaptionResponse,ProcessVideoRequest,SrtSegment,ExtractCaptionResponse,ExtractCaptionResult,BurnCaptionToVideo,ClipVideoRequest,ClipVideoResponse,UploadedClip
     from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
     from fastapi import Depends
     import subprocess
@@ -54,6 +60,14 @@ with image.imports():
     from libs.burn_captions import burn_caption_to_video, soft_burn_caption_to_video
     from libs.srt_utils import format_to_words_srt,words_to_srt
     from libs.translate_captions import translate_captions
+    from libs.clip_video import extract_clips_from_video,TempClip
+    s3 = boto3.client(
+          "s3",
+        aws_access_key_id=os.environ["AWS_ACCESS_KEY_ID"],
+    aws_secret_access_key=os.environ["AWS_SECRET_ACCESS_KEY"],
+    region_name="auto",
+    endpoint_url="https://t3.storage.dev"
+    )
     api_key_schema = APIKeyHeader(
         name='x-internal-key',
         scheme_name="ApiKeyAuth",
@@ -125,6 +139,10 @@ with image.imports():
                 os.remove(burned_video)
             print("DONE _____________________")
             return output_path, lang,False
+def safe_filename(text: str) -> str:
+    # remove dangerous characters
+    text = re.sub(r'[^a-zA-Z0-9_-]', '_', text)
+    return text[:50]  # limit length
 @app.cls(
     gpu="L40S",
     scaledown_window=60 * 5,
@@ -163,6 +181,7 @@ class CFA:
             language_code="en",  # whisperx uses ISO 639-1 ("en")
             device=device
         )
+    
     @modal.asgi_app()
     def serve(self):
         web_app = FastAPI(
@@ -259,5 +278,76 @@ class CFA:
         def soft_burn_captions(request:BurnCaptionToVideo):
           output_path, lang,cached = burn_captions(request,soft=True)
           return {"success":True, "output_path":str(output_path), "lang":request.lang_code,"cached": cached,}
-        
+        @web_app.post('/clip-video',response_model=ClipVideoResponse)
+        def clip_video(request: ClipVideoRequest):
+            if request.clip_count > 6:
+                raise HTTPException(status_code=400, detail="only 6 clips max allowed")
+
+            video_path = Path(s3_MOUNT_PATH) / request.video_key
+            caption_path = Path(s3_MOUNT_PATH) / request.caption_key
+
+            if not video_path.exists():
+                raise HTTPException(status_code=400, detail="video not found")
+
+            if not caption_path.exists():
+                raise HTTPException(status_code=400, detail="captions not found")
+
+            try:
+                with open(caption_path) as f:
+                    captions = json.load(f)
+            except Exception:
+                raise HTTPException(status_code=400, detail="invalid caption file")
+
+            if "srt" not in captions or not captions["srt"]:
+                raise HTTPException(status_code=400, detail="empty captions")
+            
+            lang = captions.get("language", "auto")
+
+            translated_srt =(
+                translate_captions(
+                srt=captions["srt"],
+                target="en",
+                source=lang
+            )
+            if lang!="en"
+            else captions["srt"]
+            )
+
+
+            clips = extract_clips_from_video(
+                srt=translated_srt,
+                clips_count=request.clip_count,
+                video_id=request.video_id,
+                video_path=str(video_path)
+            )
+
+            clips_object_keys: list[UploadedClip] = []
+            print("upload videos")
+            for clip in clips:
+                print("uploading",clip)
+                try:
+                    safe_title = safe_filename(clip.title)
+
+                    new_path = (
+                    f"users/{request.user_id}/clips/"
+                    f"{request.video_id}/"
+                    f"{uuid.uuid4().hex}-{safe_title}.mp4"
+                    )
+                    # create parent directories if they don't exist
+                    s3.upload_file(
+                    Filename=clip.path,
+                    Bucket="11labs",
+                    Key=new_path
+                        )
+                    uploaded_clip = UploadedClip(path=new_path,name=safe_title,size=os.path.getsize(clip.path))
+                    clips_object_keys.append(uploaded_clip)
+
+                except Exception as e:
+                    print("Failed to process clip:", e)
+
+                finally:
+                    if os.path.exists(clip.path):
+                        os.remove(clip.path)
+            print("finished uploading videos",clips_object_keys)
+            return {"clips": clips_object_keys}
         return web_app

@@ -56,12 +56,12 @@ const CaptionSettings = () => {
   )
 
   return (
-    <div className="flex flex-col h-full mb-20 sm:mb-0 border-b flex-1 w-full min-h-0 overflow-y-auto">
+    <div className="flex flex-col mx-auto max-w-6xl h-full mb-20 sm:mb-0 border-b flex-1 w-full min-h-0 overflow-y-auto">
 
       {/* ── Two-column grid on md+, single col on mobile ── */}
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-0 divide-y md:divide-y-0 md:divide-x divide-border/40">
 
-        {/* ═══ LEFT — Language ═══ */}
+        {/* ═══ LEFT   Language ═══ */}
         <div className="flex flex-col gap-6 p-6 lg:p-8">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 ring-1 ring-blue-500/20">
@@ -114,18 +114,18 @@ const CaptionSettings = () => {
             )}
           </div>
 
-          {/* Translation notice — only when not on original */}
+          {/* Translation notice   only when not on original */}
           {languageCode !== "og" && (
             <div className="flex items-start gap-2.5 rounded-xl bg-blue-500/8 border border-blue-500/20 px-3.5 py-3">
               <HugeiconsIcon icon={InformationCircleIcon} className="h-4 w-4 shrink-0 text-blue-500 mt-0.5" />
               <p className="text-xs text-blue-600 dark:text-blue-400 leading-relaxed">
-                Captions will be translated and synced automatically — no extra steps needed.
+                Captions will be translated and synced automatically   no extra steps needed.
               </p>
             </div>
           )}
         </div>
 
-        {/* ═══ RIGHT — Burn-in ═══ */}
+        {/* ═══ RIGHT   Burn-in ═══ */}
         <div className="flex flex-col gap-6 p-6 lg:p-8">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-500/10 ring-1 ring-violet-500/20">
@@ -155,7 +155,7 @@ const CaptionSettings = () => {
                     <span className="ml-auto text-[9px] font-bold uppercase tracking-wide text-emerald-500">active</span>
                   )}
                 </div>
-                <p className="text-[11px] text-muted-foreground leading-relaxed">Viewer can hide — like Netflix / YouTube</p>
+                <p className="text-[11px] text-muted-foreground leading-relaxed">Viewer can hide   like Netflix / YouTube</p>
               </div>
 
               <div

@@ -78,7 +78,7 @@ const FileRow = ({ file, state, progress = 0, onDelete, noBorder }: FileRowProps
 // --- Auto-upload orchestrator hook ---
 function useAutoUpload(onFailed: (file: File) => void) {
   const trpc = useTRPC()
-  // mutateAsync throws on error — works correctly inside async/await
+  // mutateAsync throws on error   works correctly inside async/await
   const { mutateAsync } = useMutation(trpc.video.getUploadUrl.mutationOptions())
   const update_file_status = useMutation(trpc.video.update_uploadStatus.mutationOptions())
   const delete_file = useMutation(trpc.video.deleteVideo.mutationOptions())

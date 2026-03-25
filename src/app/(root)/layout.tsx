@@ -15,7 +15,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <SidebarProvider>
         <AppSidebar/>
         
-        <SidebarInset className='bg-sidebar overflow-x-hidden'>
+        <SidebarInset className='bg-sidebar h-screen overflow-x-hidden'>
             {children}
             <UploadVideoToast/>
         </SidebarInset>

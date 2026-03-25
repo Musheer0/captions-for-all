@@ -22,7 +22,7 @@ const AppSidebar = () => {
                  <Image
         width={25}
         height={25}
-        src={'logo.svg'}
+        src={'/logo.svg'}
         alt='logo'
         />
         <p className='font-semibold group-data-[collapsible=icon]:hidden'>Captions4All</p>
@@ -43,8 +43,10 @@ const AppSidebar = () => {
                                 <Link href={route.route} key={i} className='my-2.5'>
                                     <SidebarMenuButton 
                                     className='
-                                    data-active:hover:bg-primary/10 data-active:bg-muted-foreground/10 data-active:rounded-md'
-                                    isActive={pathname.includes(route.route)} tooltip={route.name} key={i}>
+                                    data-active:hover:bg-primary/10 relative data-active:bg-muted-foreground/10 data-active:rounded-md'
+                                    isActive={pathname.includes(route.route.trim())} tooltip={route.name} key={i}>
+                                     <p className='absolute '>
+                                     </p>
                                         <HugeiconsIcon
                                         icon={route.icon}
                                         />
