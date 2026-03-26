@@ -94,15 +94,15 @@ export default function ClipPage(params : { id: string }) {
           </div>
         ) : clip ? (
           <div className="flex flex-wrap gap-2 mb-10">
-            <Badge variant="secondary" className="flex items-center gap-1.5 text-xs font-normal bg-white/5 text-white/50 border border-white/[0.08] rounded-full px-3 py-1">
+            <Badge variant="secondary" className="flex items-center gap-1.5 text-xs font-normal bg-white/5 text-foreground border border-white/[0.08] rounded-full px-3 py-1">
               <Layers size={12} />
               {clip.clips_count} {clip.clips_count === 1 ? "clip" : "clips"}
             </Badge>
-            <Badge variant="secondary" className="flex items-center gap-1.5 text-xs font-normal bg-white/5 text-white/50 border border-white/[0.08] rounded-full px-3 py-1">
+            <Badge variant="secondary" className="flex items-center gap-1.5 text-xs font-normal bg-white/5 text-foreground border border-white/[0.08] rounded-full px-3 py-1">
               <Clock size={12} />
               {formatDistanceToNow(new Date(clip.created_at), { addSuffix: true })}
             </Badge>
-            <Badge variant="secondary" className="flex items-center gap-1.5 text-xs font-normal bg-white/5 text-white/50 border border-white/[0.08] rounded-full px-3 py-1">
+            <Badge variant="secondary" className="flex items-center gap-1.5 text-xs font-normal bg-white/5 text-foreground border border-white/[0.08] rounded-full px-3 py-1">
               <Calendar size={12} />
               {new Date(clip.created_at).toLocaleDateString("en-US", {
                 month: "short", day: "numeric", year: "numeric",
