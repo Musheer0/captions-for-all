@@ -49,7 +49,7 @@ const UploadVideoToast = () => {
     const {pendingFiles,uploadedFile,removePendingByIndex, uploadingFile} = VideoFileStore()
 if(pendingFiles.length>0 || uploadingFile || uploadedFile)
   return (
-    <div className='fixed right-0 bottom-0 p-2 w-fit max-h-[50vh] h-fit '>
+    <div className='fixed z-99999999 right-0 bottom-0 p-2 w-fit max-h-[50vh] h-fit '>
         <div className="files-container w-sm   bg-zinc-200 dark:bg-zinc-800/60 border-b border-zinc-200 dark:border-zinc-700 rounded-xl">
         {/* header */}
             <div className="header p-4 flex w-full items-center justify-between">

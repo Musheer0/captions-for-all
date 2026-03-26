@@ -1,6 +1,8 @@
 import { Button } from '@/components/ui/button'
 import PageHeader from '@/features/dashboard/page-header'
+import UploadVideoDialog from '@/features/videos/components/upload-video-dialog'
 import UserUploadVideosView from '@/features/videos/components/user-uploaded-videos-view'
+import { UploadIcon } from 'lucide-react'
 import React from 'react'
 
 const page = () => {
@@ -8,9 +10,12 @@ const page = () => {
     <div className='w-full bg-sidebar flex h-full max-h-screen  flex-col flex-1'>
         <PageHeader  name='Videos'>
           <div className="right flex items-center gap-2">
-             <Button className={"rounded-xl"}>
-            FeedBack
+           <UploadVideoDialog>
+              <Button className={"rounded-xl"} variant={"destructive"}>
+            <UploadIcon/>
+            Upload
            </Button>
+           </UploadVideoDialog>
            <Button className={"rounded-xl"} variant={"destructive"}>
             Help
            </Button>
