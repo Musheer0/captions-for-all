@@ -71,7 +71,7 @@ export default function ClipPage(params : { id: string }) {
               <Scissors className="size-10 text-yellow-400" strokeWidth={1} />
             </div>
             <div>
-              <h1 className="text-3xl font-bold tracking-tight text-white">
+              <h1 className="text-3xl font-bold tracking-tight text-foreground">
                 {clip?.video_name ?? "Clip"}
               </h1>
               <p className="flex items-center gap-1.5 text-sm text-white/40 mt-1">
