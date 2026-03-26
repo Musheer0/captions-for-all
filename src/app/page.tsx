@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { ChevronRight, Play, Zap, Languages, Film, Sparkles, Mail, Github, Twitter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 export default function Home() {
   const [isNavOpen, setIsNavOpen] = useState(false)
@@ -28,7 +29,9 @@ export default function Home() {
             <a href="#features" className="text-foreground/70 hover:text-foreground transition">Features</a>
             <a href="#how-it-works" className="text-foreground/70 hover:text-foreground transition">How it works</a>
             <a href="#pricing" className="text-foreground/70 hover:text-foreground transition">Pricing</a>
+           <Link href={"/videos"}>
             <Button size="sm" className="rounded-full">Get Started</Button>
+           </Link>
           </div>
 
           <button className="md:hidden" onClick={() => setIsNavOpen(!isNavOpen)}>
@@ -70,9 +73,11 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
+          <Link href={'/videos'}>
             <Button size="lg" className="rounded-full px-8">
               Start for Free <ChevronRight className="w-4 h-4 ml-2" />
             </Button>
+          </Link>
             <Button size="lg" variant="outline" className="rounded-full px-8">
               <Play className="w-4 h-4 mr-2" /> See Demo
             </Button>
@@ -303,7 +308,9 @@ export default function Home() {
         <div className="max-w-4xl mx-auto text-center space-y-8 bg-gradient-to-r from-primary/10 to-purple-600/10 p-12 rounded-2xl border border-primary/20">
           <h2 className="text-4xl sm:text-5xl font-bold text-foreground">Ready to Add Captions to Your Videos?</h2>
           <p className="text-lg text-foreground/60 max-w-2xl mx-auto">Start captioning in 100+ languages today. Reach more viewers. No credit card required.</p>
+         <Link href={"/videos"}>
           <Button size="lg" className="rounded-full px-8">Start Captioning for Free</Button>
+         </Link>
         </div>
       </section>
 
@@ -343,10 +350,10 @@ export default function Home() {
             <div className="space-y-3">
               <h4 className="font-semibold text-foreground">Follow</h4>
               <div className="flex gap-4">
-                <a href="#" className="text-foreground/60 hover:text-foreground transition">
+                <a href="https://x.com/musheer_an" className="text-foreground/60 hover:text-foreground transition">
                   <Twitter className="w-5 h-5" />
                 </a>
-                <a href="#" className="text-foreground/60 hover:text-foreground transition">
+                <a href="https://github.com/Musheer0" className="text-foreground/60 hover:text-foreground transition">
                   <Github className="w-5 h-5" />
                 </a>
               </div>
@@ -354,7 +361,7 @@ export default function Home() {
           </div>
 
           <div className="border-t border-border/50 pt-8 text-sm text-foreground/60 text-center">
-            <p>&copy; 2024 Captions4All. All rights reserved.</p>
+            <p>&copy; 2026 Captions4All. All rights reserved.</p>
           </div>
         </div>
       </footer>

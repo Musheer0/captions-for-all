@@ -118,7 +118,7 @@ with image.imports():
                 captions = captions_json["srt"]
                 if request.lang_code=="og":
                     lang = captions_json["language"]
-                if  request.lang_code!=lang:
+                if  request.lang_code!="og" and request.lang_code!=lang:
                     print("TRANSLATING CAPTIONS---------------------------------")
                     captions = translate_captions(captions,request.lang_code,lang)
                     lang = request.lang_code
